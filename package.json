@@ -1,0 +1,23 @@
+{
+  "name": "react-native-image-viewer-web",
+  "version": "1.0.0",
+  "description": "Why modal and other image-viewer packages not compitable with WEB ???",
+  "main": "ImageViewer.js",
+  "directories": {
+    "doc": "docs",
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhuobinggang/react-native-image-viewer-web.git"
+  },
+  "author": "kobako",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhuobinggang/react-native-image-viewer-web/issues"
+  },
+  "homepage": "https://github.com/zhuobinggang/react-native-image-viewer-web#readme"
+}
