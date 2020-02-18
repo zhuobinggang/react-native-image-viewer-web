@@ -41,11 +41,12 @@ const doubleClickHandlerCreate = (
 
 let responder = {} ;
 
-const zoomToggle = (containerWidth, imgWidth, zoomInSize) => {
-  if(imgWidth > containerWidth){
-    return containerWidth
+const zoomToggleWidth = (containerWidth, nowWidth, realWidth) => {
+  if(nowWidth > containerWidth){
+    return containerWidth //Will always be bigger than or equal to the container width
   }else{
-    return zoomInSize < containerWidth * 2 ? containerWidth * 2 : zoomInSize
+    const twoTimesContainerWidth = containerWidth * 2;
+    return realWidth < twoTimesContainerWidth ? twoTimesContainerWidth : realWidth
   }
 }
 
@@ -115,7 +116,7 @@ export default class ImageViewer extends React.Component{
     let startPoint = {x: 0, y: 0}
     const doubleClickHandler = doubleClickHandlerCreate(() => {
       getImgSize(this.props.imgs[this.state.imgIndex]).then(({width}) => {
-        const nextWidth = zoomToggle(this.state.width, this.state.imgWidth, width)
+        const nextWidth = zoomToggleWidth(this.state.width, this.state.imgWidth, width)
         this.placeImageCenterByWidth(nextWidth)
       })
     })
@@ -138,15 +139,16 @@ export default class ImageViewer extends React.Component{
         onPanResponderRelease: () => {
           //Ajust the position
           const {imgX, imgY, imgWidth, imgHeight, width, height} = this.state
+          const isMoreThanOneImg = this.props.imgs.length > 1;
           if(imgX > 0){
-            if(imgX > this.threshold){
+            if(isMoreThanOneImg && imgX > this.threshold ){
               this.prevImg()
             }else{
               this.setState({ imgX: 0 })
             }
           }
           if(imgX +imgWidth < width){
-            if(width - (imgX + imgWidth) > this.threshold){
+            if(isMoreThanOneImg && width - (imgX + imgWidth) > this.threshold){
               this.nextImg()
             }else{
               this.setState({ imgX: width - imgWidth })
@@ -193,17 +195,28 @@ export default class ImageViewer extends React.Component{
     const uri = this.props.imgs[this.state.imgIndex];
     const component = (
       //Add layout listener
-      <View style={{width:"100%", height: '100%'}}>
+      <View style={styles.rootContainer}>
         <View onLayout={event => {
             const {width,height} = event.nativeEvent.layout;
             this.setState({height})
             this.setState({width})
-          }} style={{backgroundColor:'black', position: 'absolute', left: 0, right: 0, top: 0, bottom: 32}} {...responder.panHandlers}>
-          <Image style={{width: this.state.imgWidth, height: this.state.imgHeight, position: 'absolute', top: this.state.imgY, left: this.state.imgX}}  source={isRemoteImg(uri) ? {uri} : String(uri)} />
+          }} 
+          style={{backgroundColor: this.props.bgColor || 'black', position: 'absolute', left: 0, right: 0, top: 0, bottom: this.props.footer || 0}} 
+          {...responder.panHandlers}>
+          <Image style={{
+              position: 'absolute', 
+              width: this.state.imgWidth, 
+              height: this.state.imgHeight, 
+              top: this.state.imgY, 
+              left: this.state.imgX,
+              resizeMode: 'contain',
+            }}  source={isRemoteImg(uri) ? {uri} : String(uri)} />
         </View>
-        <View style={{backgroundColor: 'white', height: 32, width: '100%', position: 'absolute', left: 0, bottom: 0, alignItems: 'center', justifyContent: 'center'}}>
-          <Text>{this.state.imgIndex + 1} / {this.props.imgs.length}</Text>
-        </View>
+        {this.props.footer && this.props.footer > 0 ? 
+          <View style={{backgroundColor: this.props.footerColor || 'white', height: this.props.footer, width: '100%', position: 'absolute', left: 0, bottom: 0, alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={{color: this.props.footerTextColor || 'black'}}>{this.state.imgIndex + 1} / {this.props.imgs.length}</Text>
+          </View> :
+          null }
       </View>
     )
   
@@ -211,4 +224,8 @@ export default class ImageViewer extends React.Component{
       <Modal component={component} />
     )
   }
+}
+
+const styles = {
+  rootContainer: {width:"100%", height: '100%'},
 }

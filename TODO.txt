@@ -1,0 +1,4 @@
+[X] 1. When there is only one image, do not detect changing page.
+[X] 2. Make the size mode of images to be `contain`.
+[X] 3. Add option `footer` to show or hide footer.
+[X] 4. Add option `bgColor` & `foorterColor` & `footerTextColor`.
