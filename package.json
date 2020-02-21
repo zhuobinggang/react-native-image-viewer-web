@@ -1,6 +1,6 @@
 {
   "name": "react-native-image-viewer-web",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Why modal and other image-viewer packages not compitable with WEB ???",
   "main": "index.js",
   "directories": {

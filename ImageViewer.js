@@ -76,7 +76,7 @@ export default class ImageViewer extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      imgIndex: 0,
+      imgIndex: (this.props.index != null && this.props.imgs[this.props.index] != null) ? this.props.index : 0,
       width: 0,
       height: 0,
       imgWidth: 0,
@@ -213,9 +213,13 @@ export default class ImageViewer extends React.Component{
             }}  source={isRemoteImg(uri) ? {uri} : String(uri)} />
         </View>
         {this.props.footer && this.props.footer > 0 ? 
-          <View style={{backgroundColor: this.props.footerColor || 'white', height: this.props.footer, width: '100%', position: 'absolute', left: 0, bottom: 0, alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={{color: this.props.footerTextColor || 'black'}}>{this.state.imgIndex + 1} / {this.props.imgs.length}</Text>
-          </View> :
+          <Paginator 
+            footerColor={this.props.footerColor}  
+            height={this.props.footer}  
+            footerTextColor={this.props.footerTextColor}
+            index={this.state.imgIndex}
+            length={this.props.imgs.length}
+          /> : 
           null }
       </View>
     )
@@ -229,3 +233,15 @@ export default class ImageViewer extends React.Component{
 const styles = {
   rootContainer: {width:"100%", height: '100%'},
 }
+
+const Paginator = React.memo(({footerColor, height, footerTextColor, index, length}) => {
+  return <View style={{
+      backgroundColor: footerColor || 'white', 
+      height: height, 
+      width: '100%', 
+      position: 'absolute', 
+      left: 0, bottom: 0, alignItems: 'center', justifyContent: 'center'
+    }}>
+    <Text style={{color: footerTextColor || 'black'}}>{index + 1} / {length}</Text>
+  </View>
+})
